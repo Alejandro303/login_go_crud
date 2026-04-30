@@ -119,3 +119,14 @@ func UpdateUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 200, map[string]string{"message": "Usuario actualizado correctamente"})
 }
+
+
+func DeleteUsuario(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	_, err := config.DB.Exec("DELETE FROM usuarios WHERE id_usuario=$1", id)
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, map[string]string{"message": "Usuario eliminado correctamente"})
+}
