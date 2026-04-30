@@ -1,8 +1,8 @@
 package controllers
 
 import (
-	"API_THEHOUSEFIT/config"
-	"API_THEHOUSEFIT/models"
+	"LOGIN_GO_CRUD/config"
+	"LOGIN_GO_CRUD/models"
 	"database/sql"
 	"encoding/json"
 	"net/http"

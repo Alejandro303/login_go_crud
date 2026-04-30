@@ -1,4 +1,4 @@
-module API_THEHOUSEFIT
+module LOGIN_GO_CRUD
 
 go 1.21
 

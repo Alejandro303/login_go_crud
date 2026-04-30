@@ -1,11 +1,11 @@
-ackage main
+package main
 
 import (
 	"log"
 	"net/http"
 
-	"API_THEHOUSEFIT/config"
-	"API_THEHOUSEFIT/routes"
+	"LOGIN_GO_CRUD/config"
+	"LOGIN_GO_CRUD/routes"
 
 	"github.com/gorilla/mux"
 )

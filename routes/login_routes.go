@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"API_THEHOUSEFIT/controllers"
+	"LOGIN_GO_CRUD/controllers"
 	"github.com/gorilla/mux"
 )
 
