@@ -70,3 +70,19 @@ func CreateLogin(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 201, l)
 }
+
+func UpdateLogin(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	var l models.Login
+	json.NewDecoder(r.Body).Decode(&l)
+
+	_, err := config.DB.Exec(
+		"UPDATE login SET id_nombre=$1, rol=$2, activo=$3 WHERE id_login=$4",
+		l.IDNombre, l.Rol, l.Activo, id,
+	)
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, map[string]string{"message": "Login actualizado correctamente"})
+}
