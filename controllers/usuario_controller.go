@@ -76,3 +76,26 @@ func GetUsuarioByID(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 200, u)
 }
+
+
+func CreateUsuario(w http.ResponseWriter, r *http.Request) {
+	var u models.Usuario
+	if err := json.NewDecoder(r.Body).Decode(&u); err != nil {
+		respondJSON(w, 400, map[string]string{"error": "JSON inválido"})
+		return
+	}
+
+	err := config.DB.QueryRow(
+		`INSERT INTO usuarios (nombres, apellidos, email, fecha_nacimiento, nacionalidad, ciudad, departamento, direccion, telefono, activo)
+		 VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id_usuario`,
+		u.Nombres, u.Apellidos, u.Email, u.FechaNacimiento,
+		u.Nacionalidad, u.Ciudad, u.Departamento,
+		u.Direccion, u.Telefono, u.Activo,
+	).Scan(&u.IDUsuario)
+
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 201, u)
+}
