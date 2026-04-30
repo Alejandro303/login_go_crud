@@ -50,3 +50,29 @@ func GetAllUsuarios(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 200, usuarios)
 }
+
+
+func GetUsuarioByID(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	var u models.Usuario
+
+	err := config.DB.QueryRow(
+		"SELECT id_usuario, nombres, apellidos, email, fecha_nacimiento, nacionalidad, ciudad, departamento, direccion, telefono, activo, fecha_modificacion, fecha_creacion FROM usuarios WHERE id_usuario = $1",
+		id,
+	).Scan(
+		&u.IDUsuario, &u.Nombres, &u.Apellidos, &u.Email,
+		&u.FechaNacimiento, &u.Nacionalidad, &u.Ciudad,
+		&u.Departamento, &u.Direccion, &u.Telefono,
+		&u.Activo, &u.FechaModificacion, &u.FechaCreacion,
+	)
+
+	if err == sql.ErrNoRows {
+		respondJSON(w, 404, map[string]string{"error": "Usuario no encontrado"})
+		return
+	}
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, u)
+}
