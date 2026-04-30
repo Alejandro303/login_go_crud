@@ -29,3 +29,24 @@ func GetAllLogins(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 200, list)
 }
+
+
+func GetLoginByID(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	var l models.Login
+
+	err := config.DB.QueryRow(
+		"SELECT id_login, id_nombre, rol, activo, fecha_modificacion, fecha_creacion FROM login WHERE id_login=$1",
+		id,
+	).Scan(&l.IDLogin, &l.IDNombre, &l.Rol, &l.Activo, &l.FechaModificacion, &l.FechaCreacion)
+
+	if err == sql.ErrNoRows {
+		respondJSON(w, 404, map[string]string{"error": "Login no encontrado"})
+		return
+	}
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, l)
+}
