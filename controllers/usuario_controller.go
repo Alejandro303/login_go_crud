@@ -99,3 +99,23 @@ func CreateUsuario(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 201, u)
 }
+
+func UpdateUsuario(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	var u models.Usuario
+	json.NewDecoder(r.Body).Decode(&u)
+
+	_, err := config.DB.Exec(
+		`UPDATE usuarios SET nombres=$1, apellidos=$2, email=$3, fecha_nacimiento=$4,
+		 nacionalidad=$5, ciudad=$6, departamento=$7, direccion=$8, telefono=$9, activo=$10
+		 WHERE id_usuario=$11`,
+		u.Nombres, u.Apellidos, u.Email, u.FechaNacimiento,
+		u.Nacionalidad, u.Ciudad, u.Departamento,
+		u.Direccion, u.Telefono, u.Activo, id,
+	)
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, map[string]string{"message": "Usuario actualizado correctamente"})
+}
