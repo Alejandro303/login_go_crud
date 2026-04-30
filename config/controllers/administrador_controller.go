@@ -124,3 +124,13 @@ func UpdateAdministrador(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 200, map[string]string{"message": "Administrador actualizado correctamente"})
 }
+
+func DeleteAdministrador(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	_, err := config.DB.Exec("DELETE FROM administrador WHERE id_administrador=$1", id)
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, map[string]string{"message": "Administrador eliminado correctamente"})
+}
