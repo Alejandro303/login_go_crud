@@ -102,3 +102,25 @@ func CreateAdministrador(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 201, a)
 }
+
+func UpdateAdministrador(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)["id"]
+	var a models.Administrador
+	json.NewDecoder(r.Body).Decode(&a)
+
+	_, err := config.DB.Exec(
+		`UPDATE administrador SET nombre_gym=$1, nit=$2, anio_fundacion=$3, cantidad_clientes=$4,
+		departamento=$5, ciudad=$6, direccion=$7, propietario_nombre=$8, telefono=$9, correo=$10,
+		pagina_web=$11, firma=$12, fecha_firma=$13, estado=$14, activo=$15
+		WHERE id_administrador=$16`,
+		a.NombreGym, a.Nit, a.AnioFundacion, a.CantidadClientes,
+		a.Departamento, a.Ciudad, a.Direccion, a.PropietarioNombre,
+		a.Telefono, a.Correo, a.PaginaWeb, a.Firma,
+		a.FechaFirma, a.Estado, a.Activo, id,
+	)
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 200, map[string]string{"message": "Administrador actualizado correctamente"})
+}
