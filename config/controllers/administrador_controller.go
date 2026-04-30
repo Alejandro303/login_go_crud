@@ -77,3 +77,28 @@ func GetAdministradorByID(w http.ResponseWriter, r *http.Request) {
 	}
 	respondJSON(w, 200, a)
 }
+
+func CreateAdministrador(w http.ResponseWriter, r *http.Request) {
+	var a models.Administrador
+	if err := json.NewDecoder(r.Body).Decode(&a); err != nil {
+		respondJSON(w, 400, map[string]string{"error": "JSON inválido"})
+		return
+	}
+
+	err := config.DB.QueryRow(
+		`INSERT INTO administrador (nombre_gym, nit, anio_fundacion, cantidad_clientes,
+		departamento, ciudad, direccion, propietario_nombre, telefono, correo,
+		pagina_web, firma, fecha_firma, estado, activo)
+		VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15) RETURNING id_administrador`,
+		a.NombreGym, a.Nit, a.AnioFundacion, a.CantidadClientes,
+		a.Departamento, a.Ciudad, a.Direccion, a.PropietarioNombre,
+		a.Telefono, a.Correo, a.PaginaWeb, a.Firma,
+		a.FechaFirma, a.Estado, a.Activo,
+	).Scan(&a.IDAdministrador)
+
+	if err != nil {
+		respondJSON(w, 500, map[string]string{"error": err.Error()})
+		return
+	}
+	respondJSON(w, 201, a)
+}
